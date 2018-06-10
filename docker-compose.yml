@@ -32,7 +32,8 @@ services:
       # - RABBITMQ_HIPE_COMPILE=1
 
   backend:
-    build: backend/
+    #build: backend/
+    image: crazycapivara/taiga:backend
     volumes:
       - taiga_backend_media:/taiga_backend/media
       - /taiga_backend/static-root
@@ -62,7 +63,8 @@ services:
     command: ['gunicorn', '-b', '0.0.0.0:8000', 'taiga.wsgi']
 
   frontend:
-    build: frontend/
+    #build: frontend/
+    image: crazycapivara/taiga:frontend
     volumes_from:
       - backend:ro
     # environment:
@@ -74,7 +76,7 @@ services:
     #   - TAIGA_PUBLIC_REGISTER_ENABLED=false
     #   - DEFAULT_LANGUAGE="en"
     ports:
-      - "80:80"
+      - "28080:80"
     depends_on:
       # It would be better to add 'postgres' to 'depends_on' on 'backend' service
       # but 'celeryworker' extends 'backend' and we cannot extend a service
@@ -93,9 +95,11 @@ services:
       - rabbitmq
 
   events:
-    build: events/
+    #build: events/
+    image: crazycapivara/taiga:events
     environment:
       # SAME AS DJANGO_SECRET_KEY
       - TAIGA_SECRET=DJANGO_SECRET_KEY
     depends_on:
       - rabbitmq
+
